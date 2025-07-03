@@ -262,7 +262,7 @@ QString SslCertificate::toString( const QString &format ) const
 
 SslCertificate::CertType SslCertificate::type() const
 {
-	return EstEidType;
+	return EstEidType; // ci
 }
 
 SslCertificate::Validity SslCertificate::validateOnline() const
