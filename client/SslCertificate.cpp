@@ -262,52 +262,7 @@ QString SslCertificate::toString( const QString &format ) const
 
 SslCertificate::CertType SslCertificate::type() const
 {
-	for(const QString &p: policies())
-	{
-		if(p.startsWith(QLatin1String("1.3.6.1.4.1.10015.1.1")) ||
-			p.startsWith(QLatin1String("1.3.6.1.4.1.10015.3.1")) ||
-			p.startsWith(QLatin1String("1.3.6.1.4.1.10015.1.2")) ||
-			p.startsWith(QLatin1String("1.3.6.1.4.1.10015.3.2")))
-			return OldEstEidType;
-		if(p.startsWith(QLatin1String("1.3.6.1.4.1.10015.1.3")) ||
-			p.startsWith(QLatin1String("1.3.6.1.4.1.10015.11.1")) ||
-			p.startsWith(QLatin1String("1.3.6.1.4.1.10015.3.3")) ||
-			p.startsWith(QLatin1String("1.3.6.1.4.1.10015.3.11")))
-			return MobileIDType;
-		if(p.startsWith(QLatin1String("1.3.6.1.4.1.10015.7.1")) ||
-			p.startsWith(QLatin1String("1.3.6.1.4.1.10015.7.3")) ||
-			p.startsWith(QLatin1String("1.3.6.1.4.1.10015.2.1")) ||
-			p.startsWith(QLatin1String("1.3.6.1.4.1.10015.3.7")))
-			return TempelType;
-		if(p.startsWith(QLatin1String("1.3.6.1.4.1.51361.1.1.3")) ||
-			p.startsWith(QLatin1String("1.3.6.1.4.1.51361.1.2.3")))
-			return DigiIDType;
-		if(p.startsWith(QLatin1String("1.3.6.1.4.1.51361.1.1.4")) ||
-			p.startsWith(QLatin1String("1.3.6.1.4.1.51361.1.2.4")))
-			return EResidentType;
-		if(p.startsWith(QLatin1String("1.3.6.1.4.1.51361.1.1")) ||
-			p.startsWith(QLatin1String("1.3.6.1.4.1.51455.1.1")) ||
-			p.startsWith(QLatin1String("1.3.6.1.4.1.51361.1.2")) ||
-			p.startsWith(QLatin1String("1.3.6.1.4.1.51455.1.2")))
-			return EstEidType;
-	}
-
-	// Check qcStatements extension according to ETSI EN 319 412-5
-	if(QByteArray der = toDer(); !der.isNull())
-	{
-		try {
-			digidoc::X509Cert x509Cert((const unsigned char*)der.constData(),
-									   size_t(der.size()), digidoc::X509Cert::Der);
-			for(const std::string &statement: x509Cert.qcStatements())
-			{
-				if(statement == digidoc::X509Cert::QCT_ESEAL)
-					return TempelType;
-			}
-		} catch (const digidoc::Exception &e) {
-			qWarning() << "digidoc::X509Cert error:" << QString::fromStdString(e.msg());
-		}
-	}
-	return UnknownType;
+	return EstEidType;
 }
 
 SslCertificate::Validity SslCertificate::validateOnline() const
